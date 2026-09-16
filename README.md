@@ -30,12 +30,13 @@ Rebuilding a DOCX from Markdown (Pandoc-style) loses the template: section setup
 
 ## Quick start
 
-Requires Python 3.11+ and Node.js (only to run the JavaScript test suite).
+Requires Python 3.11+ and Node.js 18+ (the UI is built with Vite).
 
 ```bash
 git clone https://github.com/0xPwn3z/document-compiler.git
 cd document-compiler
 python -m pip install -r requirements.txt
+cd frontend && npm ci && npm run build && cd ..
 python -m app.main
 ```
 
@@ -79,11 +80,11 @@ template.docx ──export──▶ export.docx   (template reused, content upda
 
 ```
 app/
-  main.py        HTTP server (localhost only)
+  main.py        HTTP server (localhost only, serves the built SPA)
   converter.py   DOCX <-> Markdown conversion and template-aware export
   store.py       project persistence (data/projects/<id>/…)
-static/          single-page editor (vanilla HTML/CSS/JS)
-tests/           Python unittest suite + Node test suite for find & replace
+frontend/        React + TypeScript SPA (Vite, vitest, eslint)
+tests/           Python unittest suite
 data/            your documents — gitignored, never published
 DESIGN.md        the UI design system (Notion-style)
 ```
@@ -93,12 +94,27 @@ DESIGN.md        the UI design system (Notion-style)
 ```bash
 python -m pip install -r requirements.txt -r requirements-dev.txt
 
-python -m unittest discover -s tests -v   # Python suite
-node --test "tests/**/*.test.js"          # find & replace suite
-ruff check app tests                      # lint
+python -m unittest discover -s tests -v               # Python suite
+ruff check app tests                                  # lint
+
+# frontend (see below)
+cd frontend && npm ci && npm run lint && npm test && npm run build
 ```
 
-CI runs the Python suite on Python 3.11–3.14 (Linux and Windows), the JavaScript suite on Node 22, and ruff on every push and pull request.
+CI runs the Python suite on Python 3.11–3.14 (Linux and Windows) plus ruff, and the frontend suite (lint, vitest, build) on Node 22, on every push and pull request.
+
+### Frontend (React + TypeScript)
+
+The UI is a Vite + React SPA in [`frontend/`](frontend). Build it with `npm run build`; the Python server serves the generated `frontend/dist` and refuses to start without it (the build is part of the quick start above).
+
+```bash
+cd frontend
+npm install
+npm run dev      # dev server on :5173, proxies /api to :8765
+npm run build    # type-check (strict TS) + production build to frontend/dist
+npm run test     # vitest: find & replace, preview renderer, integration
+npm run lint     # eslint
+```
 
 ## Security considerations
 

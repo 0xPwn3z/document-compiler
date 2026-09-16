@@ -42,7 +42,9 @@ def parse_header(value: str) -> tuple[str, dict[str, str]]:
 
 
 APP_ROOT = Path(__file__).resolve().parent.parent
-STATIC_ROOT = APP_ROOT / "static"
+# The UI is the React SPA in frontend/. Build it before starting the server:
+#   cd frontend && npm ci && npm run build
+STATIC_ROOT = APP_ROOT / "frontend" / "dist"
 DATA_ROOT = Path(os.environ.get("DOC_COMPILER_DATA", APP_ROOT / "data")).resolve()
 MAX_UPLOAD_BYTES = 50 * 1024 * 1024
 MAX_MARKDOWN_BYTES = 10 * 1024 * 1024
@@ -249,6 +251,11 @@ class AppHandler(BaseHTTPRequestHandler):
 
 
 def run() -> None:
+    if not (STATIC_ROOT / "index.html").is_file():
+        print("UI non trovata: il frontend non è stato ancora compilato.")
+        print("Esegui prima il build, poi riavvia il server:")
+        print("  cd frontend && npm ci && npm run build")
+        raise SystemExit(1)
     host = os.environ.get("DOC_COMPILER_HOST", "127.0.0.1")
     port = int(os.environ.get("DOC_COMPILER_PORT", "8765"))
     server = ThreadingHTTPServer((host, port), AppHandler)

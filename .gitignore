@@ -10,6 +10,8 @@ data/
 
 # Node
 node_modules/
+frontend/dist/
+frontend/coverage/
 
 # Environments & secrets
 .env

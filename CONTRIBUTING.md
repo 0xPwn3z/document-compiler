@@ -8,7 +8,7 @@ Thanks for considering a contribution!
 git clone https://github.com/0xPwn3z/document-compiler.git
 cd document-compiler
 python -m pip install -r requirements.txt -r requirements-dev.txt
-python -m app.main          # http://127.0.0.1:8765
+python -m app.main          # http://127.0.0.1:8765 (build the frontend first, see README)
 ```
 
 ## Before opening a pull request
@@ -17,8 +17,10 @@ Run the full check suite locally — CI runs the same commands:
 
 ```bash
 python -m unittest discover -s tests -v   # Python suite
-node --test "tests/**/*.test.js"          # find & replace suite (needs Node 18+)
 ruff check app tests                      # lint
+
+# frontend
+cd frontend && npm ci && npm run lint && npm test && npm run build
 ```
 
 ## Guidelines
