@@ -1,2 +1,2 @@
 # Development-only tooling (lint). Runtime deps live in requirements.txt.
-ruff>=0.8
+ruff>=0.16.7
