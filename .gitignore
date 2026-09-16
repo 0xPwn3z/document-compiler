@@ -1,0 +1,22 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+.ruff_cache/
+
+# Project data — client material must never be committed
+data/
+
+# Node
+node_modules/
+
+# Environments & secrets
+.env
+.env.*
+
+# OS / editor noise
+.DS_Store
+Thumbs.db
+*.tmp
+*.log

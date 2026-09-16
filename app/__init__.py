@@ -1,0 +1,2 @@
+"""Document Compiler application package."""
+
